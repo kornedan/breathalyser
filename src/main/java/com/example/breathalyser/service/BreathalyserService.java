@@ -1,34 +1,22 @@
 package com.example.breathalyser.service;
 
 import com.example.breathalyser.model.Gender;
-import com.example.breathalyser.model.KindAlcohol;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BreathalyserService {
 
-    private double pureAlcoholInGram;
+    private final double DENSITY_OF_EYLIC_ALCOHOL = 0.79;
 
-    public double ResultInPrmil(Gender gender, int ml, KindAlcohol kindAlcohol, int weight) {
-        pureAlcohol(ml,kindAlcohol);
-        return pureAlcoholInGram/(gender.getModulus()*weight);
+    public double resultInPrmil(Gender gender, int ml, int percent, int weight) {
+        return pureAlcohol(ml, percent) / fluidContentInBody(gender, weight);
     }
 
-    private void pureAlcohol(int ml, KindAlcohol kindAlcohol){
-        switch (kindAlcohol){
-            case BEER: this.pureAlcoholInGram = pureAlcoholForBeer(ml);
-            case WINE: this.pureAlcoholInGram = pureAlcoholForWine(ml);
-            case VODKA: this.pureAlcoholInGram = pureAlcoholForVodka(ml);
-        }
+    public double pureAlcohol(int ml, int percent) {
+        return (double) ml * percent / 100 * DENSITY_OF_EYLIC_ALCOHOL;
     }
 
-    private double pureAlcoholForBeer(int ml) {
-        return (double) ml / 25;
-    }
-
-    private double pureAlcoholForWine(int ml) {
-        return (double) ml/10;
-    }
-
-    private double pureAlcoholForVodka(int ml) {
-        return (double) ml/3;
+    public double fluidContentInBody(Gender gender, int weight) {
+        return (double) gender.getModulus() * weight;
     }
 }
